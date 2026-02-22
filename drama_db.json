@@ -1,31 +1,38 @@
 {
   "Menikah_dengan_Pria_Sederhana_full_free": {
+    "series_name": "Menikah dengan Pria Sederhana",
     "drama_name": "Menikah dengan Pria Sederhana, Gadis Ini Baru Mengetahui FAKTA MENGEJUTKAN Tentang Suaminya",
     "episode_num": "full",
     "type": "free",
     "msg_id": 462
   },
   "Dibuang_Cewek_Murahan_Diberkahi_full_free": {
+    "series_name": "Dibuang Cewek Murahan, Diberkahi Sistem Pengembalian 10.000x!",
     "drama_name": "Dibuang Cewek Murahan Diberkahi Sistem Pengembalian 10.000x! [ Full Episode ]",
     "episode_num": "full",
     "type": "free",
     "msg_id": 463
   },
   "Dibuang_Cewek_Murahan_Diberkahi_full_vip": {
+    "series_name": "Dibuang Cewek Murahan, Diberkahi Sistem Pengembalian 10.000x!",
     "drama_name": "Dibuang Cewek Murahan Diberkahi Sistem Pengembalian 10.000x! [ Full Episode ]",
     "episode_num": "full",
     "type": "vip",
     "msg_id": 464
   },
   "Perfect_World_Episode_256_720p_256_free": {
-    "drama_name": "Perfect World Episode 256 720p",
+    "series_name": "Perfect World",
+    "drama_name": "Perfect World Episode 256",
     "episode_num": "256",
+    "quality": "720p",
     "type": "free",
     "msg_id": 449
   },
   "Perfect_World_Episode_256_1080p_256_vip": {
-    "drama_name": "Perfect World Episode 256 1080p",
+    "series_name": "Perfect World",
+    "drama_name": "Perfect World Episode 256",
     "episode_num": "256",
+    "quality": "1080p",
     "type": "vip",
     "msg_id": 450
   }
