@@ -250,7 +250,7 @@ async function loadDramas() {
 
     grouped = {};
     for (const ep of allDramas) {
-      const name = ep.drama_name || ep.key;
+      const name = ep.series_name || ep.drama_name || ep.key;
       if (!grouped[name]) grouped[name] = [];
       grouped[name].push(ep);
     }
@@ -312,11 +312,12 @@ function openDrama(encodedName) {
   const eps  = grouped[name] || [];
 
   const epList = eps.map(ep => {
-    const bc = ep.type === "vip" ? "ep-vip" : "ep-free";
-    const bt = ep.type === "vip" ? "VIP" : "FREE";
+    const bc  = ep.type === "vip" ? "ep-vip" : "ep-free";
+    const bt  = ep.type === "vip" ? "VIP" : "FREE";
+    const qty = ep.quality ? ` · ${ep.quality}` : "";
     return `
       <button class="ep-btn" onclick="watchEpisode('${ep.key}')">
-        <span>Episode ${ep.episode_num}</span>
+        <span>Episode ${ep.episode_num}${qty}</span>
         <span class="ep-badge ${bc}">${bt}</span>
       </button>`;
   }).join("");
