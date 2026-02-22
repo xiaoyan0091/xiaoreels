@@ -13,8 +13,6 @@
     color: #fff;
     min-height: 100vh;
   }
-
-  /* HEADER */
   .header {
     position: sticky; top: 0; z-index: 100;
     background: #0f0f0f;
@@ -24,52 +22,57 @@
   .header h1 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 10px; }
   .search-row { display: flex; gap: 8px; }
   .search-row input {
-    flex: 1;
-    background: #1e1e1e;
-    border: 1px solid #333;
-    border-radius: 10px;
-    padding: 10px 14px;
-    color: #fff;
-    font-size: 14px;
-    outline: none;
+    flex: 1; background: #1e1e1e;
+    border: 1px solid #333; border-radius: 10px;
+    padding: 10px 14px; color: #fff; font-size: 14px; outline: none;
   }
   .search-row input::placeholder { color: #666; }
   .search-row button {
-    background: #2196F3;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 18px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
+    background: #2196F3; color: #fff; border: none;
+    border-radius: 10px; padding: 10px 18px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
   }
-
-  /* GRID */
   .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    padding: 14px;
+    gap: 12px; padding: 14px;
   }
-
   .card {
-    background: #1a1a1a;
-    border-radius: 12px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
-    position: relative;
+    background: #1a1a1a; border-radius: 12px;
+    overflow: hidden; cursor: pointer;
+    transition: transform 0.15s; position: relative;
   }
   .card:active { transform: scale(0.97); }
-  .card img {
+
+  /* Poster pakai div bergradien + teks, bukan <img> */
+  .card-poster {
     width: 100%; aspect-ratio: 2/3;
-    object-fit: cover; display: block;
-    background: #2a2a2a;
+    display: flex; align-items: flex-end;
+    justify-content: center;
+    background: linear-gradient(135deg, #1c1c2e, #2d2d44);
+    position: relative; overflow: hidden;
   }
-  .card-info {
-    padding: 8px 10px 10px;
+  .card-poster::before {
+    content: "🎬";
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -60%);
+    font-size: 40px; opacity: 0.3;
   }
+  /* Warna gradient unik per kartu */
+  .card-poster[data-color="0"] { background: linear-gradient(135deg, #1a1a2e, #16213e); }
+  .card-poster[data-color="1"] { background: linear-gradient(135deg, #2d1b2e, #1a0a1e); }
+  .card-poster[data-color="2"] { background: linear-gradient(135deg, #0d2137, #0a3d62); }
+  .card-poster[data-color="3"] { background: linear-gradient(135deg, #1b2838, #2a475e); }
+  .card-poster[data-color="4"] { background: linear-gradient(135deg, #2e1a00, #4a2800); }
+
+  /* Jika ada field img_url di JSON, tampilkan sebagai background */
+  .card-poster img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+
+  .card-info { padding: 8px 10px 10px; }
   .card-title {
     font-size: 12px; font-weight: 600;
     color: #fff; line-height: 1.3;
@@ -81,26 +84,19 @@
   .badge {
     position: absolute; top: 8px; left: 8px;
     font-size: 10px; font-weight: 700;
-    padding: 2px 7px; border-radius: 6px;
+    padding: 2px 7px; border-radius: 6px; z-index: 2;
   }
   .badge-free { background: #4CAF50; color: #fff; }
   .badge-vip  { background: #FFD700; color: #000; }
-
-  /* EMPTY */
   .empty {
     text-align: center; padding: 60px 20px;
     color: #555; grid-column: 1/-1;
   }
   .empty span { font-size: 48px; display: block; margin-bottom: 12px; }
-
-  /* LOADING */
   .loading {
     text-align: center; padding: 40px;
-    color: #666; grid-column: 1/-1;
-    font-size: 14px;
+    color: #666; grid-column: 1/-1; font-size: 14px;
   }
-
-  /* DETAIL MODAL */
   .modal-overlay {
     display: none; position: fixed;
     inset: 0; background: rgba(0,0,0,0.85);
@@ -108,81 +104,45 @@
   }
   .modal-overlay.show { display: flex; }
   .modal {
-    background: #1a1a1a;
-    border-radius: 20px 20px 0 0;
-    width: 100%; max-height: 85vh;
-    overflow-y: auto;
-    padding: 20px 16px 40px;
-    animation: slideUp 0.25s ease;
+    background: #1a1a1a; border-radius: 20px 20px 0 0;
+    width: 100%; max-height: 85vh; overflow-y: auto;
+    padding: 20px 16px 40px; animation: slideUp 0.25s ease;
   }
   @keyframes slideUp {
     from { transform: translateY(100%); }
     to   { transform: translateY(0); }
   }
   .modal-close {
-    float: right; background: #333;
-    border: none; color: #fff;
+    float: right; background: #333; border: none; color: #fff;
     border-radius: 50%; width: 30px; height: 30px;
     font-size: 16px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
   }
-  .modal-img {
-    width: 100%; max-height: 220px;
-    object-fit: cover; border-radius: 12px;
-    margin: 12px 0;
-  }
-  .modal-title {
-    font-size: 16px; font-weight: 700;
-    margin-bottom: 8px; line-height: 1.4;
-  }
-  .modal-desc {
-    font-size: 13px; color: #aaa;
-    line-height: 1.6; margin-bottom: 16px;
-  }
+  .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; line-height: 1.4; }
+  .modal-desc  { font-size: 13px; color: #aaa; line-height: 1.6; margin-bottom: 16px; }
   .ep-list { display: flex; flex-direction: column; gap: 8px; }
   .ep-btn {
     display: flex; align-items: center; justify-content: space-between;
-    background: #252525; border: none;
-    border-radius: 10px; padding: 12px 14px;
-    color: #fff; font-size: 13px;
-    cursor: pointer; text-align: left;
-    width: 100%;
+    background: #252525; border: none; border-radius: 10px;
+    padding: 12px 14px; color: #fff; font-size: 13px;
+    cursor: pointer; text-align: left; width: 100%;
   }
   .ep-btn:active { background: #333; }
-  .ep-badge {
-    font-size: 11px; font-weight: 700;
-    padding: 2px 8px; border-radius: 6px;
-  }
+  .ep-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; }
   .ep-free { background: #4CAF50; color: #fff; }
   .ep-vip  { background: #FFD700; color: #000; }
-
-  /* ADMIN PANEL */
-  .admin-panel {
-    display: none; padding: 16px;
-  }
+  .admin-panel { display: none; padding: 16px; }
   .admin-panel.show { display: block; }
-  .admin-header {
-    font-size: 18px; font-weight: 700;
-    margin-bottom: 16px;
-  }
-  .admin-card {
-    background: #1e1e1e; border-radius: 12px;
-    padding: 16px; margin-bottom: 12px;
-  }
+  .admin-header { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+  .admin-card { background: #1e1e1e; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
   .admin-card h3 { font-size: 14px; color: #aaa; margin-bottom: 12px; }
-  .admin-stat {
-    font-size: 28px; font-weight: 700; color: #2196F3;
-  }
+  .admin-stat { font-size: 28px; font-weight: 700; color: #2196F3; }
   .admin-row {
-    display: flex; justify-content: space-between;
-    align-items: center; padding: 10px 0;
-    border-bottom: 1px solid #2a2a2a;
-    font-size: 13px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid #2a2a2a; font-size: 13px;
   }
   .admin-row:last-child { border-bottom: none; }
   .admin-row .val { color: #aaa; }
-
-  /* NAV */
   .nav {
     position: fixed; bottom: 0; left: 0; right: 0;
     background: #111; border-top: 1px solid #222;
@@ -192,8 +152,7 @@
     flex: 1; padding: 12px 0;
     display: flex; flex-direction: column;
     align-items: center; gap: 3px;
-    background: none; border: none;
-    color: #555; font-size: 10px; cursor: pointer;
+    background: none; border: none; color: #555; font-size: 10px; cursor: pointer;
   }
   .nav-btn.active { color: #2196F3; }
   .nav-btn svg { width: 22px; height: 22px; }
@@ -202,7 +161,6 @@
 </head>
 <body>
 
-<!-- MAIN CONTENT -->
 <div class="content" id="mainContent">
   <div class="header">
     <h1>🎬 Drama China</h1>
@@ -216,7 +174,6 @@
   </div>
 </div>
 
-<!-- ADMIN CONTENT -->
 <div class="admin-panel" id="adminPanel">
   <div class="admin-header">⚙️ Admin Panel</div>
   <div class="admin-card">
@@ -225,37 +182,27 @@
   </div>
   <div class="admin-card">
     <h3>Statistik</h3>
-    <div class="admin-row">
-      <span>Drama Free</span>
-      <span class="val" id="totalFree">0</span>
-    </div>
-    <div class="admin-row">
-      <span>Drama VIP</span>
-      <span class="val" id="totalVip">0</span>
-    </div>
-    <div class="admin-row">
-      <span>Total Episode</span>
-      <span class="val" id="totalEps">0</span>
-    </div>
+    <div class="admin-row"><span>Drama Free</span><span class="val" id="totalFree">0</span></div>
+    <div class="admin-row"><span>Drama VIP</span><span class="val" id="totalVip">0</span></div>
+    <div class="admin-row"><span>Total Episode</span><span class="val" id="totalEps">0</span></div>
   </div>
   <div class="admin-card">
     <h3>Aksi Cepat</h3>
     <div class="admin-row">
       <span>Upload Drama Baru</span>
-      <button onclick="openBot('admin_drama')" style="background:#2196F3;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;">Buka Bot</button>
+      <button onclick="openBot()" style="background:#2196F3;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;">Buka Bot</button>
     </div>
     <div class="admin-row">
       <span>Kelola Premium</span>
-      <button onclick="openBot('admin_premium')" style="background:#2196F3;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;">Buka Bot</button>
+      <button onclick="openBot()" style="background:#2196F3;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;">Buka Bot</button>
     </div>
     <div class="admin-row">
       <span>Broadcast</span>
-      <button onclick="openBot('broadcast_start')" style="background:#2196F3;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;">Buka Bot</button>
+      <button onclick="openBot()" style="background:#2196F3;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;">Buka Bot</button>
     </div>
   </div>
 </div>
 
-<!-- DETAIL MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal" id="modalContent">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -263,7 +210,6 @@
   </div>
 </div>
 
-<!-- NAV -->
 <nav class="nav">
   <button class="nav-btn active" id="navHome" onclick="showTab('home')">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -282,31 +228,26 @@
 <script>
 const BOT_USERNAME = "DracinMembershipBot";
 const ADMIN_ID = "6444305696";
+const DRAMA_DB_URL = "./drama_db.json";
 
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.expand(); tg.setHeaderColor('#0f0f0f'); }
 
 const userId = tg?.initDataUnsafe?.user?.id?.toString() || "";
 const isAdmin = userId === ADMIN_ID;
-
-// Tampilkan tombol admin jika admin
 if (isAdmin) document.getElementById("navAdmin").style.display = "flex";
 
-// ── DATA DRAMA dari drama_db.json ──────────────────────────────────────────
-// Ganti URL ini dengan URL file drama_db.json kamu yang di-host
-const DRAMA_DB_URL = "./drama_db.json";
-
-let allDramas = [];   // [{key, drama_name, episode_num, type, msg_id}]
-let grouped   = {};   // {drama_name: [{...episodes}]}
+let allDramas = [];
+let grouped   = {};
 
 async function loadDramas() {
   try {
     const res  = await fetch(DRAMA_DB_URL + "?t=" + Date.now());
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
     allDramas = Object.entries(data).map(([key, val]) => ({ key, ...val }));
 
-    // Group by drama_name
     grouped = {};
     for (const ep of allDramas) {
       const name = ep.drama_name || ep.key;
@@ -322,6 +263,14 @@ async function loadDramas() {
   }
 }
 
+function makePoster(name, colorIdx, imgUrl) {
+  // Jika ada img_url di JSON, tampilkan sebagai gambar
+  const imgTag = imgUrl
+    ? `<img src="${imgUrl}" alt="${name}" onerror="this.style.display='none'">`
+    : "";
+  return `<div class="card-poster" data-color="${colorIdx % 5}">${imgTag}</div>`;
+}
+
 function renderGrid(entries) {
   const grid = document.getElementById("dramaGrid");
   if (!entries.length) {
@@ -329,20 +278,20 @@ function renderGrid(entries) {
     return;
   }
 
-  grid.innerHTML = entries.map(([name, eps]) => {
-    const hasVip  = eps.some(e => e.type === "vip");
-    const hasFree = eps.some(e => e.type === "free");
-    const badge   = hasVip
+  grid.innerHTML = entries.map(([name, eps], i) => {
+    const hasVip = eps.some(e => e.type === "vip");
+    const badge  = hasVip
       ? `<div class="badge badge-vip">VIP</div>`
       : `<div class="badge badge-free">FREE</div>`;
 
-    // Poster placeholder — ganti dengan URL poster drama jika ada
-    const img = `https://via.placeholder.com/300x450/1a1a1a/444?text=${encodeURIComponent(name.substring(0,15))}`;
+    // Ambil img_url dari episode pertama jika ada
+    const imgUrl = eps[0]?.img_url || "";
+    const poster = makePoster(name, i, imgUrl);
 
     return `
       <div class="card" onclick="openDrama('${encodeURIComponent(name)}')">
         ${badge}
-        <img src="${img}" alt="${name}" onerror="this.src='https://via.placeholder.com/300x450/222/444?text=Drama'">
+        ${poster}
         <div class="card-info">
           <div class="card-title">${name}</div>
         </div>
@@ -358,18 +307,17 @@ function filterDramas() {
   renderGrid(entries);
 }
 
-// ── DETAIL MODAL ───────────────────────────────────────────────────────────
 function openDrama(encodedName) {
   const name = decodeURIComponent(encodedName);
   const eps  = grouped[name] || [];
 
   const epList = eps.map(ep => {
-    const badgeClass = ep.type === "vip" ? "ep-vip" : "ep-free";
-    const badgeText  = ep.type === "vip" ? "VIP" : "FREE";
+    const bc = ep.type === "vip" ? "ep-vip" : "ep-free";
+    const bt = ep.type === "vip" ? "VIP" : "FREE";
     return `
-      <button class="ep-btn" onclick="watchEpisode('${ep.key}', '${ep.type}')">
+      <button class="ep-btn" onclick="watchEpisode('${ep.key}')">
         <span>Episode ${ep.episode_num}</span>
-        <span class="ep-badge ${badgeClass}">${badgeText}</span>
+        <span class="ep-badge ${bc}">${bt}</span>
       </button>`;
   }).join("");
 
@@ -378,19 +326,13 @@ function openDrama(encodedName) {
     <div class="modal-desc">${eps.length} episode tersedia</div>
     <div class="ep-list">${epList}</div>
   `;
-
   document.getElementById("modalOverlay").classList.add("show");
 }
 
-function watchEpisode(key, type) {
-  // key format: drama_key_epnum_type
-  const parts = key.split("_");
-  const link  = `https://t.me/${BOT_USERNAME}?start=${key}`;
-  if (tg) {
-    tg.openTelegramLink(link);
-  } else {
-    window.open(link, "_blank");
-  }
+function watchEpisode(key) {
+  const link = `https://t.me/${BOT_USERNAME}?start=${key}`;
+  if (tg) tg.openTelegramLink(link);
+  else window.open(link, "_blank");
 }
 
 function closeModal(e) {
@@ -399,37 +341,28 @@ function closeModal(e) {
   }
 }
 
-// ── ADMIN STATS ────────────────────────────────────────────────────────────
 function updateAdminStats() {
-  const names  = Object.keys(grouped);
-  const frees  = allDramas.filter(e => e.type === "free").length;
-  const vips   = allDramas.filter(e => e.type === "vip").length;
-  document.getElementById("totalDramas").textContent = names.length;
-  document.getElementById("totalFree").textContent   = frees;
-  document.getElementById("totalVip").textContent    = vips;
+  document.getElementById("totalDramas").textContent = Object.keys(grouped).length;
+  document.getElementById("totalFree").textContent   = allDramas.filter(e => e.type === "free").length;
+  document.getElementById("totalVip").textContent    = allDramas.filter(e => e.type === "vip").length;
   document.getElementById("totalEps").textContent    = allDramas.length;
 }
 
-function openBot(action) {
+function openBot() {
   const link = `https://t.me/${BOT_USERNAME}`;
   if (tg) tg.openTelegramLink(link);
   else window.open(link, "_blank");
 }
 
-// ── TABS ───────────────────────────────────────────────────────────────────
 function showTab(tab) {
-  document.getElementById("mainContent").style.display  = tab !== "admin" ? "block" : "none";
+  document.getElementById("mainContent").style.display = tab !== "admin" ? "block" : "none";
   document.getElementById("adminPanel").classList.toggle("show", tab === "admin");
   document.getElementById("navHome").classList.toggle("active",   tab === "home");
   document.getElementById("navSearch").classList.toggle("active", tab === "search");
   document.getElementById("navAdmin").classList.toggle("active",  tab === "admin");
-
-  if (tab === "search") {
-    document.getElementById("searchInput").focus();
-  }
+  if (tab === "search") document.getElementById("searchInput").focus();
 }
 
-// ── INIT ───────────────────────────────────────────────────────────────────
 loadDramas();
 </script>
 </body>
