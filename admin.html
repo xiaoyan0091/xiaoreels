@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin – XiaoReels</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f0f0f;color:#fff;min-height:100vh}
+  #loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh}
+  .login-box{background:#1a1a1a;border-radius:16px;padding:32px 24px;width:90%;max-width:360px;text-align:center}
+  .login-box h2{font-size:20px;margin-bottom:6px}
+  .login-box p{color:#666;font-size:13px;margin-bottom:24px}
+  .login-box input{width:100%;background:#111;border:1px solid #333;border-radius:10px;padding:12px 14px;color:#fff;font-size:15px;outline:none;margin-bottom:12px;text-align:center;letter-spacing:3px}
+  .btn-blue{width:100%;background:#2196F3;color:#fff;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:600;cursor:pointer}
+  .btn-blue:disabled{opacity:.5;cursor:default}
+  .err-msg{color:#f44;font-size:13px;margin-top:10px}
+  #adminScreen{display:none;padding:16px;max-width:640px;margin:0 auto;padding-bottom:30px}
+  .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+  .top-bar h1{font-size:18px}
+  .btn-sm{background:#333;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;cursor:pointer}
+  .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px}
+  .stat-box{background:#1a1a1a;border-radius:12px;padding:14px;text-align:center}
+  .stat-num{font-size:24px;font-weight:700;color:#2196F3}
+  .stat-lbl{font-size:11px;color:#666;margin-top:2px}
+  .card{background:#1a1a1a;border-radius:14px;padding:18px;margin-bottom:16px}
+  .card h3{font-size:14px;color:#aaa;margin-bottom:14px}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .full{grid-column:1/-1}
+  label{font-size:12px;color:#888;display:block;margin-bottom:4px}
+  input,select{width:100%;background:#111;border:1px solid #2a2a2a;border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;outline:none}
+  select option{background:#111}
+  .btn-green{margin-top:14px;width:100%;background:#4CAF50;color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:600;cursor:pointer}
+  .btn-green:disabled{opacity:.5;cursor:default}
+  .search-input{width:100%;background:#111;border:1px solid #2a2a2a;border-radius:10px;padding:10px 14px;color:#fff;font-size:13px;outline:none;margin-bottom:12px}
+  .drama-item{display:flex;align-items:center;justify-content:space-between;background:#111;border-radius:10px;padding:12px 14px;margin-bottom:8px}
+  .drama-item-info{flex:1;min-width:0}
+  .drama-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .drama-meta{font-size:11px;color:#666;margin-top:2px}
+  .btn-del{background:#f44336;color:#fff;border:none;border-radius:7px;padding:5px 10px;font-size:11px;cursor:pointer;margin-left:10px;flex-shrink:0}
+  .ep-badge{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px;margin-left:5px}
+  .ep-free{background:#4CAF50;color:#fff}.ep-vip{background:#FFD700;color:#000}
+  .empty-list{text-align:center;color:#444;padding:30px;font-size:13px}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#333;color:#fff;border-radius:10px;padding:10px 20px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}
+  .toast.show{opacity:1}
+  .toast.success{background:#4CAF50}
+  .toast.error{background:#f44336}
+  .setup-info{background:#1e2a1e;border:1px solid #2d4a2d;border-radius:10px;padding:14px;margin-bottom:16px;font-size:12px;color:#8bc98b;line-height:1.7}
+  .setup-info b{color:#4CAF50}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <h2>🎬 XiaoReels Admin</h2>
+    <p>Masukkan GitHub Token kamu</p>
+    <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxx" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn-blue" id="loginBtn" onclick="doLogin()">Masuk</button>
+    <div class="err-msg" id="loginErr"></div>
+    <div style="margin-top:14px;font-size:11px;color:#444">Token disimpan hanya di browser kamu</div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="adminScreen">
+  <div class="top-bar">
+    <h1>⚙️ Admin Panel</h1>
+    <button class="btn-sm" onclick="doLogout()">Keluar</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat-box"><div class="stat-num" id="stTotal">0</div><div class="stat-lbl">Total</div></div>
+    <div class="stat-box"><div class="stat-num" id="stFree" style="color:#4CAF50">0</div><div class="stat-lbl">Free</div></div>
+    <div class="stat-box"><div class="stat-num" id="stVip" style="color:#FFD700">0</div><div class="stat-lbl">VIP</div></div>
+  </div>
+
+  <!-- FORM TAMBAH -->
+  <div class="card">
+    <h3>➕ Tambah Drama</h3>
+    <div class="form-grid">
+      <div class="full">
+        <label>Nama Series * <span style="color:#555">(untuk kartu grid)</span></label>
+        <input id="fSeries" placeholder="Perfect World" oninput="syncDrama()">
+      </div>
+      <div class="full">
+        <label>Judul Lengkap *</label>
+        <input id="fDrama" placeholder="Perfect World Episode 256">
+      </div>
+      <div>
+        <label>Nomor Episode *</label>
+        <input id="fEp" placeholder="256 atau full">
+      </div>
+      <div>
+        <label>Kualitas</label>
+        <select id="fQuality">
+          <option value="">— Pilih —</option>
+          <option value="720p">720p</option>
+          <option value="1080p">1080p</option>
+          <option value="480p">480p</option>
+          <option value="360p">360p</option>
+        </select>
+      </div>
+      <div>
+        <label>Tipe *</label>
+        <select id="fType">
+          <option value="free">FREE</option>
+          <option value="vip">VIP</option>
+        </select>
+      </div>
+      <div>
+        <label>msg_id Telegram *</label>
+        <input id="fMsgId" placeholder="449" type="number">
+      </div>
+      <div class="full">
+        <label>URL Poster (opsional)</label>
+        <input id="fImg" placeholder="https://...">
+      </div>
+    </div>
+    <button class="btn-green" id="addBtn" onclick="addDrama()">Tambah Drama</button>
+  </div>
+
+  <!-- DAFTAR -->
+  <div class="card">
+    <h3>📋 Daftar Drama</h3>
+    <input class="search-input" placeholder="🔍 cari drama..." oninput="filterList(this.value)">
+    <div id="dramaList"><div class="empty-list">Memuat...</div></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── KONFIGURASI — ganti sesuai repo kamu ──────────────────
+const GITHUB_OWNER = "xiaoyan0091";
+const GITHUB_REPO  = "NAMA_REPO_KAMU";
+const DB_PATH      = "drama_db.json";   // path file di repo
+const BRANCH       = "main";
+// ─────────────────────────────────────────────────────────
+
+const RAW_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${BRANCH}/${DB_PATH}`;
+const API_URL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DB_PATH}`;
+
+let token = "";
+let db    = {};   // {key: {...}}
+let fileSha = ""; // diperlukan GitHub API untuk update
+
+// ── LOGIN ──────────────────────────────────────────────────
+async function doLogin() {
+  const t = document.getElementById("tokenInput").value.trim();
+  if (!t) return;
+  const btn = document.getElementById("loginBtn");
+  btn.disabled = true; btn.textContent = "Memeriksa...";
+  document.getElementById("loginErr").textContent = "";
+
+  try {
+    // Cek token valid: coba ambil file
+    const res = await ghGet();
+    if (res.status === 401) throw new Error("Token tidak valid");
+    if (res.status === 404) throw new Error("Repo / file tidak ditemukan. Cek GITHUB_OWNER & GITHUB_REPO.");
+    token = t;
+    const json = await res.json();
+    fileSha = json.sha;
+    db = JSON.parse(atob(json.content.replace(/\n/g,"")));
+    showAdmin();
+  } catch(e) {
+    document.getElementById("loginErr").textContent = "❌ " + e.message;
+  }
+  btn.disabled = false; btn.textContent = "Masuk";
+}
+
+function doLogout() {
+  token = ""; db = {}; fileSha = "";
+  document.getElementById("loginScreen").style.display = "flex";
+  document.getElementById("adminScreen").style.display = "none";
+  document.getElementById("tokenInput").value = "";
+}
+
+function showAdmin() {
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("adminScreen").style.display = "block";
+  renderStats(); renderList(Object.entries(db));
+}
+
+// ── GITHUB API HELPERS ─────────────────────────────────────
+function ghGet() {
+  const t = document.getElementById("tokenInput").value.trim() || token;
+  return fetch(API_URL, { headers: { Authorization: "token " + t, Accept: "application/vnd.github+json" }});
+}
+
+async function ghPut(newDb) {
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(newDb, null, 2))));
+  const res = await fetch(API_URL, {
+    method: "PUT",
+    headers: { Authorization: "token " + token, "Content-Type": "application/json" },
+    body: JSON.stringify({ message: "update drama_db", content, sha: fileSha, branch: BRANCH })
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || "Gagal update");
+  fileSha = json.content.sha; // update sha untuk operasi berikutnya
+  return json;
+}
+
+// ── STATS & LIST ──────────────────────────────────────────
+function renderStats() {
+  const vals = Object.values(db);
+  document.getElementById("stTotal").textContent = vals.length;
+  document.getElementById("stFree").textContent  = vals.filter(e=>e.type==="free").length;
+  document.getElementById("stVip").textContent   = vals.filter(e=>e.type==="vip").length;
+}
+
+function renderList(entries) {
+  const el = document.getElementById("dramaList");
+  if (!entries.length) { el.innerHTML = `<div class="empty-list">Belum ada drama.</div>`; return; }
+  el.innerHTML = entries.map(([key, d]) => `
+    <div class="drama-item">
+      <div class="drama-item-info">
+        <div class="drama-name">${d.series_name || d.drama_name}</div>
+        <div class="drama-meta">
+          Ep ${d.episode_num}${d.quality ? ' · '+d.quality:''}
+          <span class="ep-badge ${d.type==='vip'?'ep-vip':'ep-free'}">${d.type.toUpperCase()}</span>
+          · msg_id: ${d.msg_id}
+        </div>
+      </div>
+      <button class="btn-del" onclick="deleteDrama('${key}')">Hapus</button>
+    </div>`).join("");
+}
+
+function filterList(q) {
+  const entries = Object.entries(db).filter(([k,d]) =>
+    !q || (d.series_name||"").toLowerCase().includes(q.toLowerCase()) ||
+          (d.drama_name||"").toLowerCase().includes(q.toLowerCase())
+  );
+  renderList(entries);
+}
+
+// ── SYNC JUDUL ─────────────────────────────────────────────
+function syncDrama() {
+  const d = document.getElementById("fDrama");
+  if (d.dataset.synced !== "no") d.value = document.getElementById("fSeries").value;
+}
+document.getElementById && document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("fDrama").addEventListener("input", function(){ this.dataset.synced="no"; });
+});
+
+// ── ADD ───────────────────────────────────────────────────
+async function addDrama() {
+  const series_name = document.getElementById("fSeries").value.trim();
+  const drama_name  = document.getElementById("fDrama").value.trim();
+  const episode_num = document.getElementById("fEp").value.trim();
+  const type        = document.getElementById("fType").value;
+  const quality     = document.getElementById("fQuality").value;
+  const msg_id      = Number(document.getElementById("fMsgId").value);
+  const img_url     = document.getElementById("fImg").value.trim();
+
+  if (!series_name||!drama_name||!episode_num||!msg_id) {
+    showToast("Field wajib belum diisi!","error"); return;
+  }
+
+  const slug = s => s.replace(/[^a-zA-Z0-9]/g,"_").replace(/_+/g,"_").substring(0,40);
+  const key  = `${slug(series_name)}_${episode_num}_${quality||"sd"}_${type}`;
+
+  if (db[key]) { showToast("❌ Key sudah ada: "+key,"error"); return; }
+
+  const btn = document.getElementById("addBtn");
+  btn.disabled=true; btn.textContent="Menyimpan...";
+
+  try {
+    const newDb = { ...db, [key]: { series_name, drama_name, episode_num, type,
+      ...(quality && {quality}), msg_id, ...(img_url && {img_url}) }};
+    await ghPut(newDb);
+    db = newDb;
+    renderStats(); renderList(Object.entries(db));
+    clearForm();
+    showToast("✅ Berhasil ditambahkan!", "success");
+  } catch(e) { showToast("❌ "+e.message,"error"); }
+
+  btn.disabled=false; btn.textContent="Tambah Drama";
+}
+
+// ── DELETE ─────────────────────────────────────────────────
+async function deleteDrama(key) {
+  if (!confirm(`Hapus "${key}"?`)) return;
+  try {
+    const newDb = {...db};
+    delete newDb[key];
+    await ghPut(newDb);
+    db = newDb;
+    renderStats(); renderList(Object.entries(db));
+    showToast("🗑️ Dihapus","success");
+  } catch(e) { showToast("❌ "+e.message,"error"); }
+}
+
+// ── HELPERS ────────────────────────────────────────────────
+function clearForm() {
+  ["fSeries","fDrama","fEp","fMsgId","fImg"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("fType").value="free";
+  document.getElementById("fQuality").value="";
+}
+
+function showToast(msg, type="") {
+  const t = document.getElementById("toast");
+  t.textContent=msg; t.className="toast show "+type;
+  setTimeout(()=>t.className="toast",3000);
+}
+</script>
+</body>
+</html>
